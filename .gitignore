@@ -1,0 +1,6 @@
+.pytest_cache
+.ruff_cache
+.vscode
+*__pycache__/
+dev.ipynb
+data/
