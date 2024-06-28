@@ -18,9 +18,11 @@ def loss_fn(pos_logits: Tensor, neg_logits: Tensor) -> Tensor:
 
     pos_labels = torch.ones_like(pos_logits)  # [E]
     neg_labels = torch.zeros_like(neg_logits)  # [E]
-    pos_loss = F.binary_cross_entropy_with_logits(pos_logits, pos_labels)  # []
-    neg_loss = F.binary_cross_entropy_with_logits(neg_logits, neg_labels)  # []
-    loss = pos_loss + neg_loss  # []
+
+    logits = torch.cat([pos_logits, neg_logits], dim=0)  # [2E]
+    labels = torch.cat([pos_labels, neg_labels], dim=0)  # [2E]
+
+    loss = F.binary_cross_entropy_with_logits(logits, labels)  # []
 
     return loss
 
@@ -40,8 +42,8 @@ def eval_fn(pos_logits: Tensor, neg_logits: Tensor) -> EvalResult:
     pos_labels = torch.ones_like(pos_logits, dtype=torch.int)  # [E]
     neg_labels = torch.zeros_like(neg_logits, dtype=torch.int)  # [E]
 
-    logits = torch.cat([pos_logits, neg_logits], dim=0)  # [E]
-    labels = torch.cat([pos_labels, neg_labels], dim=0)  # [E]
+    logits = torch.cat([pos_logits, neg_logits], dim=0)  # [2E]
+    labels = torch.cat([pos_labels, neg_labels], dim=0)  # [2E]
 
     auroc: Tensor = BinaryAUROC().forward(logits, labels)  # []
     auprc: Tensor = BinaryAveragePrecision().forward(logits, labels)  # []
