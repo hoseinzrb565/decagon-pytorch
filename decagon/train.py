@@ -79,7 +79,7 @@ def train(
 
         # Forward
         c_etype2pos_logits, c_etype2neg_logits = model.forward(train_pos_g, train_neg_g)
-        n_edges: int = train_pos_g.num_edges() - train_pos_g.num_edges("pdi")
+        n_edges: int = train_pos_g.num_edges()
         c_etype2loss: dict[tuple[str, str, str], Tensor] = {}
         for c_etype in train_pos_g.canonical_etypes:  # type: ignore
             importance_weight: float = train_pos_g.num_edges(c_etype) / n_edges
